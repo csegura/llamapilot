@@ -4,7 +4,7 @@
   "description": "Extension that allows you to use your own llama.cpp provider",
   "version": "0.0.1",
   "publisher": "csegura",
-  "icon": "resources/icon.png",
+  "icon": "resources/llamapilot.png",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/timkmecl/llamaPilot-vscode"
@@ -29,6 +29,16 @@
   "activationEvents": [],
   "contributes": {
     "commands": [
+      {
+        "command": "llamaPilot.Completion.On",
+        "shortTitle": "Enable llamaPilot completion",
+        "title": "Enable llamaPilot completion"
+      },
+      {
+        "command": "llamaPilot.Completion.Off",
+        "title": "Disable llamaPilot completion",
+        "shortTitle": "Disable llamaPilot completion"
+      },
       {
         "command": "llamaPilot.ask",
         "title": "Ask llamaPilot"
@@ -119,7 +129,7 @@
         {
           "id": "llamaPilot",
           "title": "llamaPilot",
-          "icon": "resources/llamapilot.png"
+          "icon": "resources/icona.png"
         }
       ]
     },
@@ -140,79 +150,109 @@
           "type": "string",
           "description": "Url Llama.cpp api",
           "order": 1,
-          "value": "http://192.168.11.211:8000/v1"
+          "default": "http://192.168.11.211:8000/v1"
+        },
+        "llamaPilot.completionEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Code completion - adjust maxLines below",
+          "order": 2
         },
         "llamaPilot.pasteOnClick": {
           "type": "boolean",
           "default": true,
           "description": "Paste the code from a codeblock inside the response into the editor when you click on it",
-          "order": 2
+          "order": 3
         },
         "llamaPilot.promptPrefix.explain": {
           "type": "string",
           "default": "Explain what this code does: ",
           "description": "The prompt prefix used for explaining the selected code",
-          "order": 3
+          "order": 4
         },
         "llamaPilot.promptPrefix.refactor": {
           "type": "string",
           "default": "Refactor this code and explain what's changed: ",
           "description": "The prompt prefix used for refactoring the selected code",
-          "order": 4
+          "order": 5
         },
         "llamaPilot.promptPrefix.findProblems": {
           "type": "string",
           "default": "Find problems with the following code, fix them and explain what was wrong (Do not change anything else): ",
           "description": "The prompt prefix used for finding problems in the selected code",
-          "order": 5
+          "order": 6
         },
         "llamaPilot.promptPrefix.optimize": {
           "type": "string",
           "default": "Optimize the following code: ",
           "description": "The prompt prefix used for optimizing the selected code",
-          "order": 6
+          "order": 7
         },
         "llamaPilot.keepConversation": {
           "type": "boolean",
           "default": true,
           "description": "Keep the conversation going by using the same conversation ID for all requests (allows follow-up questions)",
-          "order": 7
+          "order": 8
         },
         "llamaPilot.timeoutLength": {
           "type": "number",
-          "default": "60",
+          "default": 60,
           "description": "How long should the request wait for a response before timing out (in seconds)",
-          "order": 8
+          "order": 9
         },
         "llamaPilot.selectedInsideCodeblock": {
           "type": "boolean",
           "default": true,
           "description": "Append selected code as a codeblock (```...code...```) instead of plain text",
-          "order": 9
+          "order": 10
         },
         "llamaPilot.max_tokens": {
           "type": "number",
-          "default": "2500",
+          "default": 2500,
           "description": "llama.cpp: max_tokens parameter",
-          "order": 10
+          "order": 11
         },
         "llamaPilot.temperature": {
           "type": "number",
-          "default": "0.2",
-          "description": "llama.cpp: temperature parameter",
-          "order": 11
+          "default": 0.2,
+          "description": "llama.cpp: temperature parameter - Higher temperature will make outputs more random and diverse.",
+          "order": 12
         },
         "llamaPilot.max_new_tokens": {
           "type": "number",
-          "default": "200",
+          "default": 200,
           "description": "llama.cpp: max_new_tokens parameter",
-          "order": 12
+          "order": 13
         },
         "llamaPilot.top_k": {
           "type": "number",
-          "default": "50",
-          "description": "llama.cpp: top_k parameter",
-          "order": 13
+          "default": 0,
+          "description": "llama.cpp: top_k parameter - Lower top-k also concentrates sampling on the highest probability tokens for each step.",
+          "order": 14
+        },
+        "llamaPilot.top_p": {
+          "type": "number",
+          "default": 1,
+          "description": "llama.cpp: top_p parameter - Lower top-p values reduce diversity and focus on more probable tokens",
+          "order": 15
+        },
+        "llamaPilot.presence_penalty": {
+          "type": "number",
+          "default": 0,
+          "description": "llama.cpp: presence_penalty parameter - the presence penalty is a one-off additive contribution that applies to all tokens that have been sampled at least once ",
+          "order": 16
+        },
+        "llamaPilot.frecuency_penalty": {
+          "type": "number",
+          "default": 0,
+          "description": "llama.cpp: frecuency_penalty parameter - frequency penalty is a contribution that is proportional to how often a particular token has already been sampled",
+          "order": 17
+        },
+        "llamaPilot.contextLines": {
+          "type": "number",
+          "default": 50,
+          "description": "Code completion - context lines",
+          "order": 18
         }
       }
     }
@@ -247,6 +287,7 @@
     "webpack-cli": "^5.0.0"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "@types/node-fetch": "^2.6.8",
+    "node-fetch": "^2.7.0"
   }
 }

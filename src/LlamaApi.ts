@@ -17,6 +17,7 @@ export type LlamaApiParams = {
   stop?: Array<string>
   prompt?: string
   messages?: Array<LlamaMessages>
+  n?: number
 }
 
 enum LlamaMode {
@@ -29,10 +30,12 @@ type LlamaConversation = {
   messages: Array<LlamaMessages>
 }
 
-type LlamaResponseChoices = {
+export type LlamaResponseChoices = {
   index: number
-  message: { content: string }
+  message?: { content: string }
   finish_reason: string
+  logprobs?: number
+  text?: string
 }
 
 type LlamaResponseUsage = {
@@ -41,7 +44,7 @@ type LlamaResponseUsage = {
   total_tokens: number
 }
 
-type LlamaResponse = {
+export type LlamaResponse = {
   id: string
   object: string
   created: number
@@ -62,11 +65,15 @@ export class LlamaApi {
       ...{
         temperature: 0.2,
         max_tokens: 2000,
+        frequency_penalty: 0,
         top_k: 50,
+        top_p: 1,
+        n: 1,
       },
       ...params,
     }
     this.conversations = []
+    console.debug('LlamaApi init:', this.params)
   }
 
   async call(mode: LlamaMode, params: LlamaApiParams) {
@@ -99,13 +106,12 @@ export class LlamaApi {
     return this.call(LlamaMode.Completion, params)
   }
 
-  async chat(prompt: string) {
+  async chat(prompt: string, system: string) {
     const params = {
       messages: [
         {
           role: 'assistant',
-          content:
-            'You are a helpful assistant that generate great quality code',
+          content: system,
         },
         { role: 'user', content: prompt },
       ],
@@ -160,7 +166,7 @@ export class LlamaApi {
   /* Update conversation with last response */
   updateConversation(id: number) {
     const conversation = this.getConversationId(id)
-    const lastMessage = this.lastResponse?.choices[0].message.content
+    const lastMessage = this.lastResponse?.choices[0].message?.content
     if (lastMessage) {
       conversation.messages.push({ role: 'assistant', content: lastMessage })
     }

@@ -57,8 +57,8 @@
     var preCodeBlocks = document.querySelectorAll('pre code')
     for (var i = 0; i < preCodeBlocks.length; i++) {
       preCodeBlocks[i].classList.add(
-        'p-2',
-        'my-2',
+        //'p-2',
+        //'my-2',
         'block',
         'overflow-x-scroll',
       )
