@@ -6,9 +6,7 @@ This is a redux of ChatGPT extension created by Tim Kmecl (timkmecl) designed to
 
 ## LlamaPilot
 
-Still working this tools lets you use your own llama.cpp server to do the work
-
-This Visual Studio Code extension allows you to use the [unofficial ChatGPT API](https://github.com/transitive-bullshit/chatgpt-api) to generate natural language responses from OpenAI's [ChatGPT](https://chat.openai.com/chat) to your questions, right within the editor.
+**Still working** This tool lets you use your own llama.cpp server to do the work
 
 ## Sponsors
 
@@ -27,7 +25,8 @@ Welcome !!!
 - View LlamaPilot's responses in a panel next to the editor
 - Ask **follow-up questions** to the response (conversation context is maintained)
 - **Insert code snippets** from the AI's response into the active editor by clicking on them
-- Syntax hilight in panel
+- (new) Syntax hilight in llama panel view
+- (new) Settings: You can adjust model parameters, temperature, max_tokens, top_k, top_p and penalities
 
 ## Installation
 
